@@ -8,7 +8,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['.railway.app']
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.railway.app"
+    "https://jobai-production-97a3.up.railway.app"
 ]
 
 CSRF_COOKIE_SECURE = True
