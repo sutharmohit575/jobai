@@ -1,68 +1,196 @@
-# JobAI — AI-Powered Job Portal
+# 🚀 JobAI — AI-Powered Job Portal
 
-A full-featured Django web application with AI resume analysis and intelligent job matching.
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![Django](https://img.shields.io/badge/Django-5.x-green)
+![Deployment](https://img.shields.io/badge/Deployed-Railway-purple)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-## 🚀 Quick Start
+🌐 **Live Demo:**  
+👉 [![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Project-brightgreen?style=for-the-badge)](https://jobai-production-97a3.up.railway.app)
 
-```bash
-# 1. Install dependencies
-pip install -r requirements.txt
+## 📌 Overview
 
-# 2. Run migrations
-python manage.py migrate
+**JobAI** is a modern AI-powered job portal built with Django.
+It allows users to explore jobs, apply easily, and manage resumes while providing admins with a powerful dashboard to manage the platform.
 
-# 3. Start server
-python manage.py runserver
-```
+---
 
-Open http://127.0.0.1:8000
+## ✨ Features
 
-## 👤 Demo Accounts
+### 👤 User Features
 
-| Role | Username | Password |
-|------|----------|----------|
-| Job Seeker | demo_seeker | demo1234 |
-| Recruiter | demo_recruiter | demo1234 |
-| Admin | admin | admin123 |
+* 🔐 User authentication (Login / Register)
+* 📄 Resume upload & management
+* 💼 Browse and apply for jobs
+* 📊 Personalized dashboard
+
+### 🧑‍💼 Admin Features
+
+* 🛠️ Django Admin Panel (custom UI)
+* 👥 Manage users
+* 📋 Manage job listings
+* 📑 Track applications
+
+### ⚙️ Technical Features
+
+* ⚡ Django-based backend
+* 🎨 Custom admin UI (styled)
+* 🌐 Deployed on Railway
+* 🗄️ PostgreSQL database (production)
+* 🔒 CSRF & security configured
+
+---
+
+## 🏗️ Tech Stack
+
+| Technology | Usage                 |
+| ---------- | --------------------- |
+| Python     | Backend               |
+| Django     | Web Framework         |
+| PostgreSQL | Database (Production) |
+| SQLite     | Local Development     |
+| HTML/CSS   | Frontend              |
+| Railway    | Deployment            |
+
+---
 
 ## 📁 Project Structure
 
 ```
-jobai/
-├── accounts/       # User auth (seeker + recruiter roles)
-├── jobs/           # Job postings + applications
-├── resumes/        # AI resume analysis engine
-├── templates/      # All HTML templates
-├── static/         # CSS, JS assets
-└── media/          # Uploaded resume files
+JobAI/
+│
+├── accounts/        # User authentication app
+├── jobs/            # Job management
+├── resumes/         # Resume handling
+├── templates/       # HTML templates
+├── static/          # CSS, JS, images
+├── jobai/           # Main project settings
+├── manage.py
+└── db.sqlite3       # Local database
 ```
 
-## ✨ Features
+---
 
-### Job Seekers
-- Signup/Login with role selection
-- Upload resume (PDF, DOCX, TXT)
-- AI analysis: skill extraction, score (0–100), suggestions
-- Browse & filter jobs
-- One-click apply with resume + cover letter
-- AI match score per job application
-- Track application status in dashboard
+## ⚙️ Installation (Local Setup)
 
-### Recruiters
-- Post & manage job listings
-- View applicants ranked by AI match score
-- Update application status (pending/reviewing/accepted/rejected)
-- Download applicant resumes
+### 1️⃣ Clone Repository
 
-### AI Engine (resumes/utils.py)
-- Extracts 30+ common tech/soft skills
-- Estimates experience from text patterns
-- Scores resume quality (0–100)
-- Generates improvement suggestions
-- Calculates job-resume match %
+```
+git clone https://github.com/sutharmohit575/jobai.git
+cd jobai
+```
 
-## 🛠 Tech Stack
-- Python 3.11+, Django 4.2
-- SQLite (dev) — swap to PostgreSQL for production
-- Vanilla JS + CSS (no frontend framework needed)
-- Google Fonts: Syne + DM Sans
+### 2️⃣ Create Virtual Environment
+
+```
+python -m venv venv
+venv\Scripts\activate   # Windows
+```
+
+### 3️⃣ Install Dependencies
+
+```
+pip install -r requirements.txt
+```
+
+### 4️⃣ Run Migrations
+
+```
+python manage.py migrate
+```
+
+### 5️⃣ Create Superuser
+
+```
+python manage.py createsuperuser
+```
+
+### 6️⃣ Run Server
+
+```
+python manage.py runserver
+```
+
+👉 Open: http://127.0.0.1:8000/
+
+---
+
+## 🌍 Deployment (Railway)
+
+### Steps:
+
+1. Push code to GitHub
+2. Connect repo to Railway
+3. Add environment variables:
+
+```
+SECRET_KEY=your_secret_key
+DEBUG=False
+DATABASE_URL=your_postgres_url
+```
+
+4. Set Start Command:
+
+```
+gunicorn jobai.wsgi
+```
+
+5. Deploy 🚀
+
+---
+
+## 🔐 Environment Variables
+
+| Variable     | Description                  |
+| ------------ | ---------------------------- |
+| SECRET_KEY   | Django secret key            |
+| DEBUG        | Set False in production      |
+| DATABASE_URL | PostgreSQL connection string |
+
+---
+
+## 🛡️ Security Notes
+
+* CSRF protection enabled
+* Secure cookies configured
+* Environment variables used for secrets
+
+---
+
+## 🧠 Future Improvements
+
+* 🤖 AI Resume Analyzer
+* 📊 Job recommendation system
+* 💬 Chatbot integration
+* 📈 Analytics dashboard
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repo
+2. Create a branch
+3. Make changes
+4. Submit PR
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Author
+
+**Mohit Suthar**
+
+---
+
+## ⭐ Support
+
+If you like this project, please ⭐ the repo and share it!
+
+---
