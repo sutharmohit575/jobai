@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Applications — {{ job.title }} — JobAI{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div style="margin-bottom:8px;"><a href="{% url 'dashboard' %}" style="color:var(--text2);text-decoration:none;font-size:0.875rem;">← Dashboard</a></div>
+        <h1>Applications for {{ job.title }}</h1>
+        <p>{{ job.company }} · {{ applications.count }} applicant{{ applications.count|pluralize }}</p>
+    </div>
+</div>
+<div style="max-width:1100px;margin:0 auto;padding:32px 2rem;">
+    {% if applications %}
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Resume</th>
+                    <th>AI Match Score</th>
+                    <th>Status</th>
+                    <th>Applied</th>
+                    <th>Update Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>
+                    <div style="font-weight:600;">{{ app.applicant.get_full_name|default:app.applicant.username }}</div>
+                    <div style="font-size:0.78rem;color:var(--text2);">{{ app.applicant.email }}</div>
+                    {% if app.cover_letter %}
+                    <details style="margin-top:6px;">
+                        <summary style="font-size:0.75rem;color:var(--accent);cursor:pointer;">View Cover Letter</summary>
+                        <p style="font-size:0.8rem;color:var(--text2);margin-top:6px;padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;">{{ app.cover_letter }}</p>
+                    </details>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if app.resume %}
+                    <div style="font-size:0.85rem;font-weight:500;">{{ app.resume.title }}</div>
+                    <a href="{{ app.resume.file.url }}" target="_blank" style="font-size:0.75rem;color:var(--accent);">Download ↗</a>
+                    {% else %}<span style="color:var(--text3);font-size:0.8rem;">No resume</span>{% endif %}
+                </td>
+                <td>
+                    <div class="score-bar" style="flex-direction:column;align-items:flex-start;gap:6px;">
+                        <span style="font-family:var(--font-display);font-weight:800;font-size:1.1rem;color:{% if app.match_score >= 70 %}var(--accent){% elif app.match_score >= 40 %}var(--warning){% else %}var(--text2){% endif %};">{{ app.match_score }}%</span>
+                        <div class="score-track" style="width:100px;"><div class="score-fill" style="width:{{ app.match_score }}%;"></div></div>
+                    </div>
+                </td>
+                <td><span class="badge badge-{{ app.status }}">{{ app.get_status_display }}</span></td>
+                <td style="color:var(--text2);font-size:0.8rem;">{{ app.applied_at|date:"M d, Y" }}</td>
+                <td>
+                    <form method="post" action="{% url 'update_status' app.pk %}">
+                        {% csrf_token %}
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <select name="status" class="search-input" style="font-size:0.8rem;padding:6px 10px;width:auto;">
+                                <option value="pending" {% if app.status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="reviewing" {% if app.status == 'reviewing' %}selected{% endif %}>Reviewing</option>
+                                <option value="accepted" {% if app.status == 'accepted' %}selected{% endif %}>Accepted</option>
+                                <option value="rejected" {% if app.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state card">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">No applications yet</div>
+        <p class="empty-sub">Applications will appear here once candidates apply.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

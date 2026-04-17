@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — JobAI{% endblock %}
+{% block content %}
+<div class="dash-layout">
+    <aside class="dash-sidebar">
+        <div class="user-mini">
+            <div class="user-mini-avatar">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</div>
+            <div>
+                <div class="user-mini-name">{{ user.get_full_name|default:user.username }}</div>
+                <div class="user-mini-role">{{ user.role }}</div>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{% url 'dashboard' %}" class="sidebar-link active">📊 Dashboard</a>
+            <a href="{% url 'job_list' %}" class="sidebar-link">🔍 Browse Jobs</a>
+            {% if user.is_seeker %}
+                <a href="{% url 'upload_resume' %}" class="sidebar-link">📄 Upload Resume</a>
+            {% else %}
+                <a href="{% url 'post_job' %}" class="sidebar-link">➕ Post Job</a>
+            {% endif %}
+            <a href="{% url 'profile' %}" class="sidebar-link">👤 Profile</a>
+            <a href="{% url 'logout' %}" class="sidebar-link" style="margin-top:auto;color:var(--danger);">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <div class="dash-content">
+        <div class="dash-welcome">
+            <h1>Hello, {{ user.first_name|default:user.username }} 👋</h1>
+            <p>{% if user.is_recruiter %}Manage your job postings and review applicants.{% else %}Track your applications and AI resume insights.{% endif %}</p>
+        </div>
+
+        {% if user.is_recruiter %}
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(0,255,178,0.1);">💼</div>
+                <div class="stat-value">{{ total_jobs }}</div>
+                <div class="stat-name">Jobs Posted</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(59,130,246,0.1);">📨</div>
+                <div class="stat-value">{{ total_applications }}</div>
+                <div class="stat-name">Total Applications</div>
+            </div>
+        </div>
+
+        <div class="dash-section-title">
+            Your Job Postings
+            <a href="{% url 'post_job' %}" class="btn-primary-sm">+ Post New Job</a>
+        </div>
+        {% if jobs %}
+        <div class="table-card mb-6">
+            <table>
+                <thead><tr><th>Job Title</th><th>Type</th><th>Applications</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>
+                        <div style="font-weight:600;">{{ job.title }}</div>
+                        <div style="font-size:0.8rem;color:var(--text2);">{{ job.company }} · {{ job.location }}</div>
+                    </td>
+                    <td><span class="badge badge-type">{{ job.get_job_type_display }}</span></td>
+                    <td><a href="{% url 'view_applications' job.pk %}" style="color:var(--accent);font-weight:600;text-decoration:none;">{{ job.applications.count }} apps</a></td>
+                    <td><span class="badge {% if job.is_active %}badge-accepted{% else %}badge-rejected{% endif %}">{% if job.is_active %}Active{% else %}Closed{% endif %}</span></td>
+                    <td>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <a href="{% url 'view_applications' job.pk %}" class="btn-outline-sm btn-sm">View Apps</a>
+                            <a href="{% url 'edit_job' job.pk %}" class="btn-outline-sm btn-sm">Edit</a>
+                            <form method="post" action="{% url 'delete_job' job.pk %}" style="display:inline;" onsubmit="return confirm('Delete this job?')">
+                                {% csrf_token %}<button type="submit" class="btn btn-danger btn-sm">Del</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if recent_apps %}
+        <div class="dash-section-title">Recent Applications</div>
+        <div class="table-card">
+            <table>
+                <thead><tr><th>Applicant</th><th>Job</th><th>Match Score</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody>
+                {% for app in recent_apps %}
+                <tr>
+                    <td><div style="font-weight:600;">{{ app.applicant.get_full_name|default:app.applicant.username }}</div></td>
+                    <td>{{ app.job.title }}</td>
+                    <td>
+                        <div class="score-bar">
+                            <div class="score-track"><div class="score-fill" style="width:{{ app.match_score }}%"></div></div>
+                            <span>{{ app.match_score }}%</span>
+                        </div>
+                    </td>
+                    <td><span class="badge badge-{{ app.status }}">{{ app.get_status_display }}</span></td>
+                    <td style="color:var(--text2);font-size:0.8rem;">{{ app.applied_at|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state card">
+            <div class="empty-icon">📋</div>
+            <div class="empty-title">No jobs posted yet</div>
+            <p class="empty-sub">Start attracting top talent by posting your first job opening.</p>
+            <a href="{% url 'post_job' %}" class="btn btn-primary">Post First Job</a>
+        </div>
+        {% endif %}
+
+        {% else %}{# SEEKER DASHBOARD #}
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(59,130,246,0.1);">📨</div>
+                <div class="stat-value">{{ total_applications }}</div>
+                <div class="stat-name">Applied</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(245,158,11,0.1);">⏳</div>
+                <div class="stat-value">{{ pending }}</div>
+                <div class="stat-name">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(16,185,129,0.1);">✅</div>
+                <div class="stat-value">{{ accepted }}</div>
+                <div class="stat-name">Accepted</div>
+            </div>
+        </div>
+
+        <div class="dash-section-title">
+            My Resumes
+            <a href="{% url 'upload_resume' %}" class="btn-primary-sm">+ Upload Resume</a>
+        </div>
+        {% if resumes %}
+        <div class="card-grid card-grid-3 mb-6">
+            {% for resume in resumes %}
+            <div class="card" style="display:flex;flex-direction:column;gap:12px;">
+                <div>
+                    <div style="font-family:var(--font-display);font-weight:700;margin-bottom:4px;">{{ resume.title }}</div>
+                    <div style="font-size:0.8rem;color:var(--text2);">Uploaded {{ resume.uploaded_at|date:"M d, Y" }}</div>
+                </div>
+                {% if resume.analyzed %}
+                <div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                        <span style="font-size:0.8rem;color:var(--text2);">AI Score</span>
+                        <span style="font-family:var(--font-display);font-weight:700;color:var(--accent);">{{ resume.ai_score|floatformat:0 }}/100</span>
+                    </div>
+                    <div class="score-track" style="width:100%;"><div class="score-fill" style="width:{{ resume.ai_score }}%"></div></div>
+                </div>
+                {% endif %}
+                <div style="display:flex;gap:8px;margin-top:auto;">
+                    <a href="{% url 'resume_detail' resume.pk %}" class="btn-primary-sm btn-sm" style="flex:1;justify-content:center;">View Analysis</a>
+                    <form method="post" action="{% url 'delete_resume' resume.pk %}" onsubmit="return confirm('Delete?')">{% csrf_token %}<button type="submit" class="btn btn-danger btn-sm">🗑</button></form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card mb-6" style="text-align:center;padding:40px;">
+            <div style="font-size:3rem;margin-bottom:12px;">📄</div>
+            <div style="font-family:var(--font-display);font-weight:700;margin-bottom:8px;">No resumes yet</div>
+            <p style="color:var(--text2);font-size:0.875rem;margin-bottom:20px;">Upload your resume to get AI-powered insights and job matching.</p>
+            <a href="{% url 'upload_resume' %}" class="btn btn-primary">Upload Resume</a>
+        </div>
+        {% endif %}
+
+        <div class="dash-section-title">My Applications</div>
+        {% if applications %}
+        <div class="table-card">
+            <table>
+                <thead><tr><th>Job</th><th>Company</th><th>Match Score</th><th>Status</th><th>Applied</th></tr></thead>
+                <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td><a href="{% url 'job_detail' app.job.pk %}" style="color:var(--text);font-weight:600;text-decoration:none;">{{ app.job.title }}</a></td>
+                    <td style="color:var(--text2);">{{ app.job.company }}</td>
+                    <td>
+                        {% if app.match_score > 0 %}
+                        <div class="score-bar">
+                            <div class="score-track"><div class="score-fill" style="width:{{ app.match_score }}%"></div></div>
+                            <span>{{ app.match_score }}%</span>
+                        </div>
+                        {% else %}—{% endif %}
+                    </td>
+                    <td><span class="badge badge-{{ app.status }}">{{ app.get_status_display }}</span></td>
+                    <td style="color:var(--text2);font-size:0.8rem;">{{ app.applied_at|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <div class="empty-title">No applications yet</div>
+            <p class="empty-sub">Browse open positions and start applying.</p>
+            <a href="{% url 'job_list' %}" class="btn btn-primary">Browse Jobs</a>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

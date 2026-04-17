@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Browse Jobs — JobAI{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <h1>Browse Jobs</h1>
+        <p>Find your perfect role with AI-powered matching</p>
+    </div>
+</div>
+<div style="max-width:1200px;margin:0 auto;padding:32px 2rem;">
+    <form method="get" class="search-bar">
+        <div class="search-field" style="flex:2;">
+            <label>Search</label>
+            <input type="text" name="q" value="{{ q }}" class="search-input" placeholder="Job title, company, or skill...">
+        </div>
+        <div class="search-field">
+            <label>Location</label>
+            <input type="text" name="location" value="{{ location }}" class="search-input" placeholder="City or Remote">
+        </div>
+        <div class="search-field">
+            <label>Type</label>
+            <select name="job_type" class="search-input">
+                <option value="">All Types</option>
+                <option value="full-time" {% if job_type == 'full-time' %}selected{% endif %}>Full Time</option>
+                <option value="part-time" {% if job_type == 'part-time' %}selected{% endif %}>Part Time</option>
+                <option value="contract" {% if job_type == 'contract' %}selected{% endif %}>Contract</option>
+                <option value="internship" {% if job_type == 'internship' %}selected{% endif %}>Internship</option>
+                <option value="remote" {% if job_type == 'remote' %}selected{% endif %}>Remote</option>
+            </select>
+        </div>
+        <div class="search-field">
+            <label>Level</label>
+            <select name="level" class="search-input">
+                <option value="">All Levels</option>
+                <option value="entry" {% if level == 'entry' %}selected{% endif %}>Entry Level</option>
+                <option value="mid" {% if level == 'mid' %}selected{% endif %}>Mid Level</option>
+                <option value="senior" {% if level == 'senior' %}selected{% endif %}>Senior Level</option>
+                <option value="lead" {% if level == 'lead' %}selected{% endif %}>Lead/Manager</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-end;white-space:nowrap;">Search Jobs</button>
+        {% if q or location or job_type or level %}<a href="{% url 'job_list' %}" class="btn btn-outline" style="align-self:flex-end;white-space:nowrap;">Clear</a>{% endif %}
+    </form>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <p style="color:var(--text2);font-size:0.875rem;"><strong style="color:var(--text);">{{ jobs.count }}</strong> jobs found</p>
+    </div>
+
+    {% if jobs %}
+    <div class="card-grid card-grid-2">
+        {% for job in jobs %}
+        <a href="{% url 'job_detail' job.pk %}" class="job-card">
+            <div class="job-header">
+                <div class="company-avatar" style="background:linear-gradient(135deg,hsl({{ forloop.counter|add:'200' }},70%,45%),hsl({{ forloop.counter|add:'260' }},70%,55%));">{{ job.company|first|upper }}</div>
+                <div style="flex:1;min-width:0;">
+                    <div class="job-title">{{ job.title }}</div>
+                    <div class="company-name">{{ job.company }} · {{ job.location }}</div>
+                </div>
+            </div>
+            <div class="job-meta">
+                <span class="badge badge-type">{{ job.get_job_type_display }}</span>
+                <span class="badge badge-level">{{ job.get_level_display }}</span>
+                {% if job.salary_min %}<span class="badge badge-salary">₹{{ job.salary_min }}–{{ job.salary_max }}</span>{% endif %}
+            </div>
+            <div class="job-skills">
+                {% for skill in job.get_skills_list|slice:":5" %}<span class="skill-tag">{{ skill }}</span>{% endfor %}
+            </div>
+            <div class="job-footer">
+                <span class="job-date">{{ job.created_at|timesince }} ago</span>
+                <span class="text-accent text-sm font-bold">Apply Now →</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state card">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">No jobs found</div>
+        <p class="empty-sub">Try adjusting your search filters or check back later for new postings.</p>
+        <a href="{% url 'job_list' %}" class="btn btn-outline">Clear Filters</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

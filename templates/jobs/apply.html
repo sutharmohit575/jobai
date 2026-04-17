@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Apply — {{ job.title }} — JobAI{% endblock %}
+{% block content %}
+<div class="form-section-wide">
+    <div style="margin-bottom:24px;">
+        <a href="{% url 'job_detail' job.pk %}" style="color:var(--text2);text-decoration:none;font-size:0.875rem;">← Back to Job</a>
+    </div>
+    <div class="form-card fade-up">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--card-border);">
+            <div class="company-avatar" style="width:52px;height:52px;font-size:1.3rem;border-radius:12px;">{{ job.company|first|upper }}</div>
+            <div>
+                <div class="form-title" style="font-size:1.4rem;">Apply for {{ job.title }}</div>
+                <div class="form-subtitle" style="margin-bottom:0;">{{ job.company }} · {{ job.location }}</div>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            {% if resumes %}
+            <div class="form-group">
+                <label class="form-label">Select Resume</label>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    {% for resume in resumes %}
+                    <label style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.03);border:1px solid var(--card-border);border-radius:var(--radius);padding:14px 16px;cursor:pointer;transition:all 0.2s;" class="resume-option">
+                        <input type="radio" name="resume_id" value="{{ resume.pk }}" {% if forloop.first %}checked{% endif %} style="accent-color:var(--accent);">
+                        <div style="flex:1;">
+                            <div style="font-weight:600;font-size:0.9rem;">{{ resume.title }}</div>
+                            <div style="font-size:0.78rem;color:var(--text2);">Uploaded {{ resume.uploaded_at|date:"M d, Y" }} · AI Score: {{ resume.ai_score|floatformat:0 }}/100</div>
+                        </div>
+                        {% if resume.analyzed %}<span class="badge badge-accepted" style="font-size:0.7rem;">Analyzed ✓</span>{% endif %}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius);padding:16px;margin-bottom:20px;">
+                <div style="font-weight:600;margin-bottom:4px;">⚠️ No resume uploaded</div>
+                <p style="font-size:0.875rem;color:var(--text2);">Upload a resume to get an AI match score. You can still apply without one.</p>
+                <a href="{% url 'upload_resume' %}" class="btn-primary-sm" style="margin-top:10px;display:inline-flex;">Upload Resume</a>
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label class="form-label">Cover Letter <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+                <textarea name="cover_letter" class="form-control" rows="5" placeholder="Tell the recruiter why you're a great fit for this role..."></textarea>
+            </div>
+
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary" style="flex:1;">Submit Application →</button>
+                <a href="{% url 'job_detail' job.pk %}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

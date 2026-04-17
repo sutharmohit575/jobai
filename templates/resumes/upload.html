@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Upload Resume — JobAI{% endblock %}
+{% block content %}
+<div class="form-section">
+    <div class="form-card fade-up">
+        <div class="form-title">Upload Resume</div>
+        <div class="form-subtitle">Let our AI analyze your resume and find best-matching jobs</div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Resume Title</label>
+                <input type="text" name="title" class="form-control" placeholder="e.g. Python Developer Resume" value="{{ form.title.value|default:'' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Resume File</label>
+                <label class="upload-zone" for="file-input">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-title">Drop your resume here</div>
+                    <div class="upload-sub">Supports PDF, DOCX, TXT · Max 5MB</div>
+                    <div style="margin-top:16px;">
+                        <span class="btn-primary-sm">Choose File</span>
+                    </div>
+                </label>
+                <input type="file" name="file" id="file-input" accept=".pdf,.doc,.docx,.txt" required style="display:none;">
+                {% if form.file.errors %}<div class="form-error">{{ form.file.errors.0 }}</div>{% endif %}
+            </div>
+            <div style="background:rgba(0,255,178,0.05);border:1px solid rgba(0,255,178,0.15);border-radius:var(--radius);padding:16px;margin-bottom:24px;">
+                <div style="font-weight:600;font-size:0.875rem;margin-bottom:8px;color:var(--accent);">🤖 What AI will analyze:</div>
+                <ul style="list-style:none;display:flex;flex-direction:column;gap:4px;">
+                    <li style="font-size:0.82rem;color:var(--text2);">✓ Extract all technical and soft skills</li>
+                    <li style="font-size:0.82rem;color:var(--text2);">✓ Estimate years of experience</li>
+                    <li style="font-size:0.82rem;color:var(--text2);">✓ Detect education & certifications</li>
+                    <li style="font-size:0.82rem;color:var(--text2);">✓ Generate resume quality score (0–100)</li>
+                    <li style="font-size:0.82rem;color:var(--text2);">✓ Provide actionable improvement tips</li>
+                </ul>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Upload & Analyze with AI →</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

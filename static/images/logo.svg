@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A0F1E"/>
+      <stop offset="100%" style="stop-color:#1A2548"/>
+    </linearGradient>
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00FFB2"/>
+      <stop offset="100%" style="stop-color:#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="dotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00FFB2"/>
+      <stop offset="100%" style="stop-color:#00CC8E"/>
+    </linearGradient>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background card -->
+  <rect width="400" height="400" rx="60" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid lines -->
+  <g opacity="0.06" stroke="#FFFFFF" stroke-width="1">
+    <line x1="0" y1="100" x2="400" y2="100"/>
+    <line x1="0" y1="200" x2="400" y2="200"/>
+    <line x1="0" y1="300" x2="400" y2="300"/>
+    <line x1="100" y1="0" x2="100" y2="400"/>
+    <line x1="200" y1="0" x2="200" y2="400"/>
+    <line x1="300" y1="0" x2="300" y2="400"/>
+  </g>
+
+  <!-- Subtle glow orb top-left -->
+  <ellipse cx="60" cy="80" rx="80" ry="60" fill="#00FFB2" opacity="0.05"/>
+
+  <!-- Waveform / chart line  -->
+  <polyline
+    points="60,230  105,160  150,200  200,140  250,175  295,120  340,150"
+    fill="none"
+    stroke="url(#lineGrad)"
+    stroke-width="7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#softGlow)"
+  />
+
+  <!-- Vertical bar accent lines below the chart -->
+  <g opacity="0.18">
+    <rect x="60"  y="245" width="7" height="30" rx="3" fill="#00FFB2"/>
+    <rect x="105" y="252" width="7" height="23" rx="3" fill="#00FFB2"/>
+    <rect x="150" y="248" width="7" height="27" rx="3" fill="#3B82F6"/>
+    <rect x="200" y="243" width="7" height="32" rx="3" fill="#00FFB2"/>
+    <rect x="250" y="250" width="7" height="25" rx="3" fill="#3B82F6"/>
+    <rect x="295" y="235" width="7" height="40" rx="3" fill="#00FFB2"/>
+    <rect x="340" y="242" width="7" height="33" rx="3" fill="#3B82F6"/>
+  </g>
+
+  <!-- AI pulse dot at the peak -->
+  <circle cx="295" cy="120" r="14" fill="url(#dotGrad)" opacity="0.25"/>
+  <circle cx="295" cy="120" r="9"  fill="url(#dotGrad)" opacity="0.5"/>
+  <circle cx="295" cy="120" r="5"  fill="#00FFB2"/>
+
+  <!-- Wordmark: Job -->
+  <text
+    x="68" y="330"
+    font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+    font-size="72"
+    font-weight="800"
+    letter-spacing="-2"
+    fill="#FFFFFF">Job</text>
+
+  <!-- Wordmark: AI (accent color) -->
+  <text
+    x="211" y="330"
+    font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+    font-size="72"
+    font-weight="800"
+    letter-spacing="-2"
+    fill="#00FFB2">AI</text>
+
+  <!-- Tagline -->
+  <text
+    x="200" y="362"
+    font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+    font-size="16"
+    font-weight="400"
+    letter-spacing="4"
+    fill="#8B9AB5"
+    text-anchor="middle">AI-POWERED HIRING</text>
+</svg>

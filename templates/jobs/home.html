@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}JobAI — AI-Powered Job Portal{% endblock %}
+{% block content %}
+
+<section class="hero">
+    <div class="hero-bg">
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+        <div class="hero-orb hero-orb-3"></div>
+    </div>
+    <div class="hero-content fade-up">
+        <div class="hero-badge"><span class="dot"></span> AI-Powered Hiring Platform</div>
+        <h1 class="hero-title">
+            Find Your Dream Job<br>with <span class="gradient-text">Artificial Intelligence</span>
+        </h1>
+        <p class="hero-subtitle">Upload your resume, get instant AI analysis, and match with jobs that perfectly fit your skills and experience.</p>
+        <div class="hero-cta">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to Dashboard</a>
+                {% if user.is_seeker %}<a href="{% url 'job_list' %}" class="btn btn-outline">Browse Jobs</a>{% else %}<a href="{% url 'post_job' %}" class="btn btn-outline">Post a Job</a>{% endif %}
+            {% else %}
+                <a href="{% url 'signup' %}" class="btn btn-primary">Get Started Free</a>
+                <a href="{% url 'job_list' %}" class="btn btn-outline">Browse Jobs</a>
+            {% endif %}
+        </div>
+        <div class="hero-stats">
+            <div class="stat-item"><span class="stat-num" data-target="{{ total_jobs }}" data-suffix="+">0+</span><span class="stat-label">Live Jobs</span></div>
+            <div class="stat-item"><span class="stat-num" data-target="98" data-suffix="%">98%</span><span class="stat-label">Match Accuracy</span></div>
+            <div class="stat-item"><span class="stat-num" data-target="500" data-suffix="+">500+</span><span class="stat-label">Companies</span></div>
+        </div>
+    </div>
+</section>
+
+<div style="background: linear-gradient(to bottom, var(--bg), var(--bg2)); padding: 2px 0;">
+<section class="section">
+    <div class="section-header fade-up">
+        <div class="section-tag">✦ Core Features</div>
+        <h2 class="section-title">Everything You Need to Hire Smarter</h2>
+        <p class="section-sub">From AI resume screening to intelligent job matching — all in one platform.</p>
+    </div>
+    <div class="feature-grid">
+        <div class="feature-card fade-up">
+            <div class="feature-icon feature-icon-green">🤖</div>
+            <div class="feature-title">AI Resume Analysis</div>
+            <p class="feature-desc">Our AI instantly parses your resume, extracts skills, estimates experience, and gives you a detailed score with actionable suggestions.</p>
+        </div>
+        <div class="feature-card fade-up-2">
+            <div class="feature-icon feature-icon-blue">🎯</div>
+            <div class="feature-title">Smart Job Matching</div>
+            <p class="feature-desc">Get a compatibility score for every job based on your extracted skills and experience. No more guessing — know your match before you apply.</p>
+        </div>
+        <div class="feature-card fade-up-3">
+            <div class="feature-icon feature-icon-purple">📋</div>
+            <div class="feature-title">Recruiter Dashboard</div>
+            <p class="feature-desc">Post jobs, manage applications, and see applicants ranked by AI match score. Find the best talent faster than ever before.</p>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon feature-icon-orange">⚡</div>
+            <div class="feature-title">Instant Analysis</div>
+            <p class="feature-desc">No waiting. Upload your resume and get comprehensive AI insights in seconds — skills, experience, education, and improvement tips.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="section-header">
+        <div class="section-tag">✦ How It Works</div>
+        <h2 class="section-title">Up and Running in Minutes</h2>
+    </div>
+    <div class="steps-grid">
+        <div class="step-card"><div class="step-num">1</div><div class="step-title">Create Account</div><p class="step-desc">Sign up as a Job Seeker or Recruiter in under 60 seconds.</p></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-title">Upload Resume</div><p class="step-desc">Upload your resume and let our AI extract your skills and profile.</p></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-title">Browse & Match</div><p class="step-desc">See your AI match score for every job listing automatically.</p></div>
+        <div class="step-card"><div class="step-num">4</div><div class="step-title">Apply & Track</div><p class="step-desc">Apply with one click and track your application status in real time.</p></div>
+    </div>
+</section>
+
+{% if jobs %}
+<section class="section" style="padding-top: 0;">
+    <div class="section-header">
+        <div class="section-tag">✦ Latest Openings</div>
+        <h2 class="section-title">Hot Jobs Right Now</h2>
+    </div>
+    <div class="card-grid card-grid-2">
+        {% for job in jobs %}
+        <a href="{% url 'job_detail' job.pk %}" class="job-card">
+            <div class="job-header">
+                <div class="company-avatar">{{ job.company|first|upper }}</div>
+                <div>
+                    <div class="job-title">{{ job.title }}</div>
+                    <div class="company-name">{{ job.company }} · {{ job.location }}</div>
+                </div>
+            </div>
+            <div class="job-meta">
+                <span class="badge badge-type">{{ job.get_job_type_display }}</span>
+                <span class="badge badge-level">{{ job.get_level_display }}</span>
+                {% if job.salary_min %}<span class="badge badge-salary">₹{{ job.salary_min|floatformat:0 }}–{{ job.salary_max|floatformat:0 }}</span>{% endif %}
+            </div>
+            <div class="job-skills">
+                {% for skill in job.get_skills_list|slice:":4" %}<span class="skill-tag">{{ skill }}</span>{% endfor %}
+            </div>
+            <div class="job-footer">
+                <span class="job-date">{{ job.created_at|timesince }} ago</span>
+                <span class="text-accent text-sm font-bold">View →</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+        <a href="{% url 'job_list' %}" class="btn btn-outline">View All Jobs →</a>
+    </div>
+</section>
+{% endif %}
+</div>
+{% endblock %}

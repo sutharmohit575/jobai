@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Login — JobAI{% endblock %}
+{% block content %}
+<div class="form-section">
+    <div class="form-card fade-up">
+        <div style="text-align:center;margin-bottom:32px;">
+            <svg width="48" height="48" viewBox="0 0 32 32" fill="none" style="margin-bottom:12px;">
+                <rect width="32" height="32" rx="8" fill="url(#lg)"/>
+                <path d="M8 22L12 10L16 18L20 13L24 22" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="24" cy="10" r="3" fill="#00FFB2"/>
+                <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#0A0F1E"/><stop offset="1" stop-color="#1A2548"/></linearGradient></defs>
+            </svg>
+            <div class="form-title">Welcome Back</div>
+            <div class="form-subtitle">Sign in to your JobAI account</div>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" placeholder="Enter your username" required autofocus>
+                {% if form.username.errors %}<div class="form-error">{{ form.username.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors.0 }}</div>{% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px;">Sign In →</button>
+        </form>
+        <div class="form-link" style="margin-top:24px;">Don't have an account? <a href="{% url 'signup' %}">Create one free</a></div>
+    </div>
+</div>
+{% endblock %}

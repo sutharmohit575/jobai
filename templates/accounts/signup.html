@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up — JobAI{% endblock %}
+{% block content %}
+<div class="form-section" style="max-width:620px;">
+    <div class="form-card fade-up">
+        <div style="text-align:center;margin-bottom:32px;">
+            <div class="form-title">Join JobAI</div>
+            <div class="form-subtitle">Create your account and unlock AI-powered hiring</div>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">I am a...</label>
+                <div class="role-options">
+                    <label class="role-option">
+                        <input type="radio" name="role" value="seeker" checked>
+                        <div class="role-icon">👤</div>
+                        <div class="role-name">Job Seeker</div>
+                        <div style="font-size:0.75rem;color:var(--text2);margin-top:4px;">Find & apply to jobs</div>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="recruiter">
+                        <div class="role-icon">🧑‍💼</div>
+                        <div class="role-name">Recruiter</div>
+                        <div style="font-size:0.75rem;color:var(--text2);margin-top:4px;">Post jobs & hire talent</div>
+                    </label>
+                </div>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text" name="first_name" class="form-control" placeholder="John" required>
+                    {% if form.first_name.errors %}<div class="form-error">{{ form.first_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" name="last_name" class="form-control" placeholder="Doe" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" placeholder="johndoe" required>
+                {% if form.username.errors %}<div class="form-error">{{ form.username.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" placeholder="john@example.com" required>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password1" class="form-control" placeholder="Create password" required>
+                    {% if form.password1.errors %}<div class="form-error">{{ form.password1.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" name="password2" class="form-control" placeholder="Repeat password" required>
+                    {% if form.password2.errors %}<div class="form-error">{{ form.password2.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px;">Create Account →</button>
+        </form>
+        <div class="form-link" style="margin-top:20px;">Already have an account? <a href="{% url 'login' %}">Sign in</a></div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}{{ resume.title }} — AI Analysis — JobAI{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div style="margin-bottom:8px;"><a href="{% url 'dashboard' %}" style="color:var(--text2);text-decoration:none;font-size:0.875rem;">← Dashboard</a></div>
+        <h1>{{ resume.title }}</h1>
+        <p>Uploaded {{ resume.uploaded_at|date:"M d, Y · g:i A" }}</p>
+    </div>
+</div>
+
+<div style="max-width:1000px;margin:0 auto;padding:32px 2rem;">
+    {% if resume.analyzed %}
+    <!-- AI Score Section -->
+    <div class="card mb-4" style="text-align:center;padding:40px;">
+        <div style="margin-bottom:16px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);font-weight:700;">AI Resume Score</div>
+        <div data-score="{{ resume.ai_score }}" style="display:inline-block;">
+            <div class="score-ring">
+                <svg width="140" height="140" viewBox="0 0 140 140">
+                    <defs>
+                        <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#00FFB2"/>
+                            <stop offset="100%" stop-color="#3B82F6"/>
+                        </linearGradient>
+                    </defs>
+                    <circle class="score-ring-bg" cx="70" cy="70" r="54"/>
+                    <circle class="score-ring-fill" cx="70" cy="70" r="54"
+                        stroke-dasharray="339.29"
+                        stroke-dashoffset="{{ 339.29|floatformat:2 }}"
+                        style="stroke-dashoffset:calc(339.29 - (339.29 * {{ resume.ai_score }} / 100));transition:stroke-dashoffset 1.5s ease;"/>
+                </svg>
+                <div class="score-center">
+                    <div class="score-num" style="color:{% if resume.ai_score >= 75 %}var(--accent){% elif resume.ai_score >= 50 %}var(--warning){% else %}var(--danger){% endif %}">{{ resume.ai_score|floatformat:0 }}</div>
+                    <div class="score-label">out of 100</div>
+                </div>
+            </div>
+        </div>
+        <div style="max-width:540px;margin:0 auto;color:var(--text2);font-size:0.9rem;line-height:1.7;">{{ resume.ai_summary }}</div>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap;">
+            <a href="{{ resume.file.url }}" target="_blank" class="btn btn-outline btn-sm">📥 Download Resume</a>
+            <form method="post" action="{% url 'reanalyze_resume' resume.pk %}" style="display:inline;">
+                {% csrf_token %}<button type="submit" class="btn btn-outline btn-sm">🔄 Re-analyze</button>
+            </form>
+        </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;" class="analysis-grid-2">
+        <!-- Skills -->
+        <div class="card">
+            <div style="font-family:var(--font-display);font-weight:700;margin-bottom:16px;font-size:1rem;">🛠 Detected Skills</div>
+            {% if resume.get_skills_list %}
+            <div class="job-skills" style="gap:8px;">
+                {% for skill in resume.get_skills_list %}<span class="skill-tag" style="font-size:0.82rem;padding:5px 14px;">{{ skill }}</span>{% endfor %}
+            </div>
+            {% else %}
+            <p style="color:var(--text2);font-size:0.875rem;">No skills detected. Try uploading a text-based resume.</p>
+            {% endif %}
+        </div>
+
+        <!-- Experience -->
+        <div class="card">
+            <div style="font-family:var(--font-display);font-weight:700;margin-bottom:16px;font-size:1rem;">📈 Profile Summary</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;justify-content:space-between;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;">
+                    <span style="color:var(--text2);font-size:0.875rem;">Experience</span>
+                    <span style="font-weight:700;color:var(--accent);">{{ resume.experience_years|floatformat:0 }}+ years</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;">
+                    <span style="color:var(--text2);font-size:0.875rem;">Skills Found</span>
+                    <span style="font-weight:700;">{{ resume.get_skills_list|length }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;">
+                    <span style="color:var(--text2);font-size:0.875rem;">Resume Score</span>
+                    <span style="font-weight:700;color:{% if resume.ai_score >= 75 %}var(--accent){% elif resume.ai_score >= 50 %}var(--warning){% else %}var(--danger){% endif %}">{{ resume.ai_score|floatformat:0 }}/100</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Suggestions -->
+    {% if resume.ai_suggestions %}
+    <div class="card mt-4" style="margin-top:20px;">
+        <div style="font-family:var(--font-display);font-weight:700;margin-bottom:16px;font-size:1rem;">💡 AI Improvement Suggestions</div>
+        <div class="suggestions-list">
+            {% for line in resume.ai_suggestions.splitlines %}
+            {% if line.strip %}
+            <div class="suggestion-item">{{ line }}</div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div style="margin-top:24px;text-align:center;">
+        <a href="{% url 'job_list' %}" class="btn btn-primary">🎯 Find Matching Jobs →</a>
+    </div>
+
+    {% else %}
+    <div class="empty-state card">
+        <div class="empty-icon">🔬</div>
+        <div class="empty-title">Analysis pending</div>
+        <p class="empty-sub">Your resume is being processed. Click below to run analysis.</p>
+        <form method="post" action="{% url 'reanalyze_resume' resume.pk %}">
+            {% csrf_token %}<button type="submit" class="btn btn-primary">Run AI Analysis</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.score-ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 8; }
+.score-ring-fill { fill: none; stroke: url(#scoreGrad); stroke-width: 8; stroke-linecap: round; }
+@media(max-width:640px){ .analysis-grid-2 { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}

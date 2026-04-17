@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}{% if edit %}Edit{% else %}Post{% endif %} Job — JobAI{% endblock %}
+{% block content %}
+<div class="form-section-wide">
+    <div class="form-card fade-up">
+        <div class="form-title">{% if edit %}Edit Job Posting{% else %}Post a New Job{% endif %}</div>
+        <div class="form-subtitle">Fill in the details below to attract top talent</div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label">Job Title *</label>
+                    <input type="text" name="title" value="{{ form.title.value|default:'' }}" class="form-control" placeholder="e.g. Senior Python Developer" required>
+                    {% if form.title.errors %}<div class="form-error">{{ form.title.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Company *</label>
+                    <input type="text" name="company" value="{{ form.company.value|default:'' }}" class="form-control" placeholder="e.g. TechCorp India" required>
+                </div>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label">Location *</label>
+                    <input type="text" name="location" value="{{ form.location.value|default:'' }}" class="form-control" placeholder="e.g. Bangalore / Remote" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Job Type *</label>
+                    <select name="job_type" class="form-control">
+                        <option value="full-time" {% if form.job_type.value == 'full-time' %}selected{% endif %}>Full Time</option>
+                        <option value="part-time" {% if form.job_type.value == 'part-time' %}selected{% endif %}>Part Time</option>
+                        <option value="contract" {% if form.job_type.value == 'contract' %}selected{% endif %}>Contract</option>
+                        <option value="internship" {% if form.job_type.value == 'internship' %}selected{% endif %}>Internship</option>
+                        <option value="remote" {% if form.job_type.value == 'remote' %}selected{% endif %}>Remote</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label">Experience Level *</label>
+                    <select name="level" class="form-control">
+                        <option value="entry" {% if form.level.value == 'entry' %}selected{% endif %}>Entry Level</option>
+                        <option value="mid" {% if form.level.value == 'mid' %}selected{% endif %}>Mid Level</option>
+                        <option value="senior" {% if form.level.value == 'senior' %}selected{% endif %}>Senior Level</option>
+                        <option value="lead" {% if form.level.value == 'lead' %}selected{% endif %}>Lead/Manager</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Application Deadline</label>
+                    <input type="date" name="deadline" value="{{ form.deadline.value|default:'' }}" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Required Skills *</label>
+                <input type="text" name="skills_required" value="{{ form.skills_required.value|default:'' }}" class="form-control" placeholder="Python, Django, React, SQL, AWS (comma-separated)" required>
+                <div style="font-size:0.78rem;color:var(--text3);margin-top:4px;">AI uses these skills to match and score applicants automatically.</div>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label">Min Salary (₹/year)</label>
+                    <input type="number" name="salary_min" value="{{ form.salary_min.value|default:'' }}" class="form-control" placeholder="e.g. 600000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Max Salary (₹/year)</label>
+                    <input type="number" name="salary_max" value="{{ form.salary_max.value|default:'' }}" class="form-control" placeholder="e.g. 1200000">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Job Description *</label>
+                <textarea name="description" class="form-control" rows="6" placeholder="Describe the role, responsibilities, team culture..." required>{{ form.description.value|default:'' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Requirements *</label>
+                <textarea name="requirements" class="form-control" rows="5" placeholder="List qualifications, experience, certifications..." required>{{ form.requirements.value|default:'' }}</textarea>
+            </div>
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary" style="flex:1;">{% if edit %}Update Job{% else %}Post Job →{% endif %}</button>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

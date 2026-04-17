@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}{{ job.title }} — JobAI{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+            <a href="{% url 'job_list' %}" style="color:var(--text2);text-decoration:none;font-size:0.875rem;">← All Jobs</a>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+            <div class="company-avatar" style="width:60px;height:60px;font-size:1.4rem;border-radius:14px;">{{ job.company|first|upper }}</div>
+            <div>
+                <h1 style="margin-bottom:6px;">{{ job.title }}</h1>
+                <p>{{ job.company }} · {{ job.location }}</p>
+                <div class="job-meta" style="margin-top:10px;">
+                    <span class="badge badge-type">{{ job.get_job_type_display }}</span>
+                    <span class="badge badge-level">{{ job.get_level_display }}</span>
+                    {% if job.salary_min %}<span class="badge badge-salary">₹{{ job.salary_min }} – {{ job.salary_max }}</span>{% endif %}
+                    {% if job.deadline %}<span class="badge badge-location">Deadline: {{ job.deadline }}</span>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="job-detail-layout">
+    <div class="job-detail-main">
+        <div class="card mb-4">
+            <h3 class="font-display font-bold mb-2" style="font-size:1rem;">Required Skills</h3>
+            <div class="job-skills" style="gap:8px;">
+                {% for skill in job.get_skills_list %}<span class="skill-tag" style="font-size:0.8rem;padding:5px 14px;">{{ skill }}</span>{% endfor %}
+            </div>
+        </div>
+
+        <div class="card prose">
+            <h3>About the Role</h3>
+            <p>{{ job.description|linebreaksbr }}</p>
+            <h3>Requirements</h3>
+            <p>{{ job.requirements|linebreaksbr }}</p>
+        </div>
+    </div>
+
+    <div>
+        <div class="card apply-card">
+            <div class="apply-card-title">Ready to Apply?</div>
+            {% if not user.is_authenticated %}
+                <p style="color:var(--text2);font-size:0.875rem;margin-bottom:16px;">Sign in to apply for this position.</p>
+                <a href="{% url 'login' %}" class="btn btn-primary" style="width:100%;">Sign In to Apply</a>
+            {% elif has_applied %}
+                <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:var(--radius);padding:16px;text-align:center;margin-bottom:16px;">
+                    <div style="font-size:1.5rem;margin-bottom:6px;">✅</div>
+                    <div style="font-weight:600;color:#6ee7b7;">Applied Successfully</div>
+                    <div style="font-size:0.8rem;color:var(--text2);margin-top:4px;">Track in your dashboard</div>
+                </div>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline" style="width:100%;">View Dashboard</a>
+            {% elif user.is_recruiter %}
+                <p style="color:var(--text2);font-size:0.875rem;">Recruiters cannot apply to jobs.</p>
+            {% else %}
+                <a href="{% url 'apply_job' job.pk %}" class="btn btn-primary" style="width:100%;">Apply Now →</a>
+            {% endif %}
+            <div class="divider"></div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.8rem;">
+                    <span style="color:var(--text2);">Posted</span>
+                    <span>{{ job.created_at|date:"M d, Y" }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.8rem;">
+                    <span style="color:var(--text2);">Applications</span>
+                    <span>{{ job.applications.count }}</span>
+                </div>
+                {% if job.deadline %}
+                <div style="display:flex;justify-content:space-between;font-size:0.8rem;">
+                    <span style="color:var(--text2);">Deadline</span>
+                    <span style="color:var(--warning);">{{ job.deadline }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
