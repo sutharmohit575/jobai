@@ -7,6 +7,10 @@ SECRET_KEY = 'django-insecure-jobai-secret-key-change-in-production'
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://jobai-production-97a3.up.railway.app"
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
