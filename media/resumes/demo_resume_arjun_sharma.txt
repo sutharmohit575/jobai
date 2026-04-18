@@ -1,0 +1,114 @@
+ARJUN SHARMA
+Senior Software Developer
+Bangalore, Karnataka, India
+arjun.sharma@email.com | +91 98765 43210
+linkedin.com/in/arjunsharma | github.com/arjunsharma
+
+─────────────────────────────────────────────────────────────────
+PROFESSIONAL SUMMARY
+─────────────────────────────────────────────────────────────────
+Results-driven Full Stack Developer with 4 years of experience
+building scalable web applications and REST APIs. Proficient in
+Python, Django, React, and PostgreSQL. Passionate about clean
+code, system design, and leveraging machine learning to solve
+real-world problems. Strong experience with AWS and Docker in
+production environments.
+
+─────────────────────────────────────────────────────────────────
+TECHNICAL SKILLS
+─────────────────────────────────────────────────────────────────
+Languages    : Python, JavaScript, TypeScript, SQL, Bash
+Backend      : Django, Flask, Node.js, REST API, GraphQL
+Frontend     : React, HTML, CSS, Redux, Tailwind CSS
+Databases    : PostgreSQL, MySQL, MongoDB, Redis
+DevOps       : Docker, AWS, Git, CI/CD, Linux, Kubernetes
+Data/AI      : Machine Learning, Pandas, NumPy, Scikit-learn
+Tools        : Figma, Jira, Postman, VS Code
+
+─────────────────────────────────────────────────────────────────
+WORK EXPERIENCE
+─────────────────────────────────────────────────────────────────
+
+Software Developer — TCS (Tata Consultancy Services)
+Bangalore, Karnataka | July 2022 – Present (2 years)
+
+  • Built and maintained 3 Django microservices serving 500K+ daily
+    requests with 99.9% uptime
+  • Reduced API response times by 40% through PostgreSQL query
+    optimization and Redis caching
+  • Developed React dashboard used by 200+ internal analysts for
+    real-time data visualization
+  • Integrated AWS S3 for file storage and SES for email delivery,
+    cutting infrastructure costs by 25%
+  • Mentored 2 junior developers and led weekly code review sessions
+  • Wrote comprehensive unit and integration tests achieving 85% code
+    coverage using Pytest
+
+Junior Developer — Wipro Technologies
+Hyderabad, Telangana | August 2021 – June 2022 (11 months)
+
+  • Contributed to a Python/Flask-based internal HR management tool
+    used across 5 offices
+  • Built 15+ REST API endpoints consumed by the mobile app team
+  • Created SQL reports and dashboards for HR analytics using Tableau
+  • Participated in Agile sprints, daily standups, and sprint reviews
+  • Fixed 40+ bugs in legacy codebase and improved test coverage from
+    30% to 60%
+
+─────────────────────────────────────────────────────────────────
+EDUCATION
+─────────────────────────────────────────────────────────────────
+
+Bachelor of Engineering — Computer Science
+Visvesvaraya Technological University (VTU), Bangalore
+Graduated: June 2021 | CGPA: 8.4 / 10
+
+Relevant Coursework: Data Structures & Algorithms, Database
+Management Systems, Operating Systems, Computer Networks,
+Software Engineering, Artificial Intelligence
+
+─────────────────────────────────────────────────────────────────
+PROJECTS
+─────────────────────────────────────────────────────────────────
+
+JobAI — AI-Powered Job Portal (Personal Project)
+  • Built a full-stack Django + React application for AI-powered
+    job matching and resume analysis
+  • Implemented NLP-based skill extraction and resume scoring system
+  • Deployed on Railway with PostgreSQL database and WhiteNoise for
+    static files
+  • Tech: Python, Django, React, PostgreSQL, Docker, AWS
+
+SmartBudget — Expense Tracker App
+  • Developed a personal finance app with automated expense
+    categorization using machine learning
+  • Achieved 91% categorization accuracy using Scikit-learn
+    RandomForest classifier
+  • 200+ active users on the web version
+  • Tech: Python, Flask, React, PostgreSQL, Scikit-learn, Heroku
+
+Open Source Contributions
+  • Contributed 3 pull requests to Django REST Framework
+    (documentation and bug fixes)
+  • Maintain a Python utility library with 150+ GitHub stars
+
+─────────────────────────────────────────────────────────────────
+CERTIFICATIONS
+─────────────────────────────────────────────────────────────────
+
+  • AWS Certified Developer – Associate (2023)
+  • Google Associate Cloud Engineer (2022)
+  • Python for Data Science — Coursera / IBM (2021)
+
+─────────────────────────────────────────────────────────────────
+ACHIEVEMENTS
+─────────────────────────────────────────────────────────────────
+
+  • Winner — HackIndia 2023 (1st place out of 800+ teams)
+  • TCS Star Performer Award, Q3 2023
+  • University rank holder — top 5% of graduating batch
+
+─────────────────────────────────────────────────────────────────
+LANGUAGES
+─────────────────────────────────────────────────────────────────
+English (Fluent), Hindi (Native), Kannada (Conversational)
