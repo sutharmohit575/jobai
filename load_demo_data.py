@@ -19,33 +19,33 @@ from jobs.models import Job
 
 # ── USERS ──────────────────────────────────────────────────────────────────
 
-recruiter, created = User.objects.get_or_create(
-    username='demo_recruiter',
-    defaults={
-        'email': 'recruiter@jobai.demo',
-        'first_name': 'Priya',
-        'last_name': 'Mehta',
-        'role': 'recruiter',
-        'company': 'JobAI Demo',
-        'location': 'Bangalore',
-        'password': make_password('demo1234'),
-    }
-)
-print(f"{'Created' if created else 'Found'} recruiter → demo_recruiter / demo1234")
+# recruiter, created = User.objects.get_or_create(
+#     username='demo_recruiter',
+#     defaults={
+#         'email': 'recruiter@jobai.demo',
+#         'first_name': 'Priya',
+#         'last_name': 'Mehta',
+#         'role': 'recruiter',
+#         'company': 'JobAI Demo',
+#         'location': 'Bangalore',
+#         'password': make_password('demo1234'),
+#     }
+# )
+# print(f"{'Created' if created else 'Found'} recruiter → demo_recruiter / demo1234")
 
-seeker, created = User.objects.get_or_create(
-    username='demo_seeker',
-    defaults={
-        'email': 'seeker@jobai.demo',
-        'first_name': 'Arjun',
-        'last_name': 'Sharma',
-        'role': 'seeker',
-        'location': 'Bangalore',
-        'bio': 'Full Stack Developer with 4 years of experience in Python, Django, and React.',
-        'password': make_password('demo1234'),
-    }
-)
-print(f"{'Created' if created else 'Found'} seeker    → demo_seeker / demo1234")
+# seeker, created = User.objects.get_or_create(
+#     username='demo_seeker',
+#     defaults={
+#         'email': 'seeker@jobai.demo',
+#         'first_name': 'Arjun',
+#         'last_name': 'Sharma',
+#         'role': 'seeker',
+#         'location': 'Bangalore',
+#         'bio': 'Full Stack Developer with 4 years of experience in Python, Django, and React.',
+#         'password': make_password('demo1234'),
+#     }
+# )
+# print(f"{'Created' if created else 'Found'} seeker    → demo_seeker / demo1234")
 
 # ── JOBS ───────────────────────────────────────────────────────────────────
 
@@ -156,9 +156,9 @@ for job in JOBS:
     Job.objects.create(recruiter=recruiter, **job)
 
 print(f"\n✓ {Job.objects.count()} jobs created successfully!")
-print("\n─────────────────────────────────────")
-print("  Demo Accounts:")
-print("  Seeker    → demo_seeker / demo1234")
-print("  Recruiter → demo_recruiter / demo1234")
-print("─────────────────────────────────────")
-print("\nNow upload 'demo_resume_arjun_sharma.txt' as demo_seeker to test AI analysis.")
+# print("\n─────────────────────────────────────")
+# print("  Demo Accounts:")
+# print("  Seeker    → demo_seeker / demo1234")
+# print("  Recruiter → demo_recruiter / demo1234")
+# print("─────────────────────────────────────")
+# print("\nNow upload 'demo_resume_arjun_sharma.txt' as demo_seeker to test AI analysis.")
