@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Resume Builder — JobAI{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <h1>🛠 Resume Builder</h1>
+        <p>Create a professional resume with AI assistance — no design skills needed</p>
+    </div>
+</div>
+<div style="max-width:1100px;margin:0 auto;padding:40px 2rem;">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;">
+        <div>
+            <div style="font-family:var(--font-display);font-weight:700;font-size:1.1rem;">Your Resumes</div>
+            <div style="color:var(--text2);font-size:0.85rem;">{{ resumes.count }} resume{{ resumes.count|pluralize }} built</div>
+        </div>
+        <a href="{% url 'builder_create' %}" class="btn btn-primary">+ Build New Resume</a>
+    </div>
+
+    {% if resumes %}
+    <div class="card-grid card-grid-3">
+        {% for r in resumes %}
+        <div class="card" style="display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                <div>
+                    <div style="font-family:var(--font-display);font-weight:700;font-size:1rem;margin-bottom:4px;">{{ r.title }}</div>
+                    <div style="font-size:0.78rem;color:var(--text2);">{{ r.full_name }} · Updated {{ r.updated_at|date:"M d, Y" }}</div>
+                </div>
+                <span class="badge badge-type" style="white-space:nowrap;">{{ r.get_template_display }}</span>
+            </div>
+            {% if r.skills %}
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                {% for skill in r.skills.split|slice:":4" %}
+                <span class="skill-tag">{{ skill|cut:"," }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div style="display:flex;gap:8px;margin-top:auto;flex-wrap:wrap;">
+                <a href="{% url 'builder_edit' r.pk %}" class="btn-primary-sm btn-sm" style="flex:1;justify-content:center;">✏️ Edit</a>
+                <a href="{% url 'builder_preview' r.pk %}" class="btn-outline-sm btn-sm" target="_blank">👁 Preview</a>
+                <form method="post" action="{% url 'builder_delete' r.pk %}" onsubmit="return confirm('Delete this resume?')">
+                    {% csrf_token %}<button type="submit" class="btn btn-danger btn-sm">🗑</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state card">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">No resumes built yet</div>
+        <p class="empty-sub">Use our AI-powered builder to create a professional resume in minutes.</p>
+        <a href="{% url 'builder_create' %}" class="btn btn-primary">Build Your First Resume</a>
+    </div>
+    {% endif %}
+
+    <!-- Feature highlights -->
+    <div style="margin-top:48px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;">
+        <div class="card" style="text-align:center;padding:24px;">
+            <div style="font-size:2rem;margin-bottom:10px;">🤖</div>
+            <div style="font-family:var(--font-display);font-weight:700;margin-bottom:6px;">AI Writing Help</div>
+            <p style="color:var(--text2);font-size:0.82rem;">One click to generate summaries, bullet points, and skills tailored to your target role.</p>
+        </div>
+        <div class="card" style="text-align:center;padding:24px;">
+            <div style="font-size:2rem;margin-bottom:10px;">👁</div>
+            <div style="font-family:var(--font-display);font-weight:700;margin-bottom:6px;">Live Preview</div>
+            <p style="color:var(--text2);font-size:0.82rem;">See your resume update in real-time as you type. Print or save as PDF instantly.</p>
+        </div>
+        <div class="card" style="text-align:center;padding:24px;">
+            <div style="font-size:2rem;margin-bottom:10px;">🎨</div>
+            <div style="font-family:var(--font-display);font-weight:700;margin-bottom:6px;">3 Templates</div>
+            <p style="color:var(--text2);font-size:0.82rem;">Choose from Modern, Classic, and Minimal templates — all ATS-friendly.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

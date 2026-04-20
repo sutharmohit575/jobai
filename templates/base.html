@@ -8,7 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="icon" href="{%static 'favicon.ico' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+    <link rel="apple-touch-icon" href="{% static 'favicon.ico' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -22,11 +24,12 @@
                 <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                 {% if user.is_seeker %}
                     <a href="{% url 'upload_resume' %}" class="nav-link">Upload Resume</a>
+                    <a href="{% url 'builder_list' %}" class="nav-link">Build Resume</a>
                 {% else %}
                     <a href="{% url 'post_job' %}" class="nav-link">Post Job</a>
                 {% endif %}
                 <a href="{% url 'profile' %}" class="nav-link">Profile</a>
-                <a href="{% url 'logout' %}" class="btn btn-outline-sm" style="color: #e14444;">Logout</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-sm" style="color: red;">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}" class="nav-link">Login</a>
                 <a href="{% url 'signup' %}" class="btn btn-primary-sm">Get Started</a>

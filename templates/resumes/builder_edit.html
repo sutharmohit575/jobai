@@ -1,0 +1,389 @@
+{% extends 'base.html' %}
+{% block title %}Edit Resume — {{ resume.title }} — JobAI{% endblock %}
+
+{% block extra_css %}
+<style>
+.builder-layout { display: grid; grid-template-columns: 1fr 420px; gap: 0; min-height: calc(100vh - 64px); }
+.builder-form  { padding: 32px; overflow-y: auto; border-right: 1px solid var(--card-border); }
+.builder-panel { background: var(--bg2); padding: 24px; overflow-y: auto; position: sticky; top: 64px; height: calc(100vh - 64px); }
+.section-block { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; }
+.section-block-title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+.entry-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; position: relative; }
+.entry-card .remove-btn { position: absolute; top: 10px; right: 10px; background: rgba(239,68,68,0.1); border: none; color: var(--danger); border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 0.75rem; }
+.ai-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,255,178,0.08); border: 1px solid rgba(0,255,178,0.2); color: var(--accent); padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.ai-btn:hover { background: rgba(0,255,178,0.15); }
+.ai-btn.loading { opacity: 0.6; pointer-events: none; }
+.tab-bar { display: flex; gap: 4px; margin-bottom: 24px; background: rgba(255,255,255,0.04); border-radius: var(--radius); padding: 4px; }
+.tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: var(--text2); border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; font-family: var(--font-body); }
+.tab-btn.active { background: var(--card); color: var(--text); }
+.tab-section { display: none; }
+.tab-section.active { display: block; }
+.preview-frame { width: 100%; height: calc(100vh - 180px); border: none; border-radius: var(--radius); background: white; }
+@media(max-width:900px){ .builder-layout { grid-template-columns: 1fr; } .builder-panel { display: none; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="background:var(--bg2);border-bottom:1px solid var(--card-border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:64px;z-index:50;">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a href="{% url 'builder_list' %}" style="color:var(--text2);text-decoration:none;font-size:0.875rem;">← My Resumes</a>
+        <span style="color:var(--text3);">/</span>
+        <span style="font-family:var(--font-display);font-weight:700;">{{ resume.title }}</span>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+        <a href="{% url 'builder_preview' resume.pk %}" target="_blank" class="btn-outline-sm">👁 Full Preview</a>
+        <button onclick="saveResume()" class="btn btn-primary btn-sm" id="save-btn">💾 Save</button>
+    </div>
+</div>
+
+<div class="builder-layout">
+    <!-- LEFT: FORM -->
+    <div class="builder-form">
+        <form id="resume-form" method="post" action="{% url 'builder_save' resume.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="experience_json" id="experience_json" value="{{ experience_json }}">
+            <input type="hidden" name="education_json"  id="education_json"  value="{{ education_json }}">
+            <input type="hidden" name="projects_json"   id="projects_json"   value="{{ projects_json }}">
+
+            <!-- Target Role input (for AI) -->
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;padding:14px 18px;background:rgba(0,255,178,0.05);border:1px solid rgba(0,255,178,0.15);border-radius:var(--radius);">
+                <span style="font-size:1.2rem;">🤖</span>
+                <div style="flex:1;">
+                    <label style="font-size:0.75rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:4px;">Target Job Role (for AI)</label>
+                    <input type="text" id="job_role" value="Software Developer" class="form-control" style="background:rgba(255,255,255,0.06);border-color:rgba(0,255,178,0.2);padding:8px 12px;font-size:0.9rem;" placeholder="e.g. Full Stack Developer, Data Scientist...">
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tab-bar">
+                <button type="button" class="tab-btn active" onclick="switchTab('info')">👤 Info</button>
+                <button type="button" class="tab-btn" onclick="switchTab('experience')">💼 Experience</button>
+                <button type="button" class="tab-btn" onclick="switchTab('education')">🎓 Education</button>
+                <button type="button" class="tab-btn" onclick="switchTab('skills')">🛠 Skills</button>
+                <button type="button" class="tab-btn" onclick="switchTab('projects')">🚀 Projects</button>
+            </div>
+
+            <!-- TAB: PERSONAL INFO -->
+            <div class="tab-section active" id="tab-info">
+                <div class="section-block">
+                    <div class="section-block-title">📋 Resume Settings</div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Resume Title</label>
+                            <input type="text" name="title" value="{{ resume.title }}" class="form-control" placeholder="e.g. Senior Dev Resume" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Template</label>
+                            <select name="template" class="form-control" onchange="updatePreview()">
+                                <option value="modern"  {% if resume.template == 'modern'  %}selected{% endif %}>Modern</option>
+                                <option value="classic" {% if resume.template == 'classic' %}selected{% endif %}>Classic</option>
+                                <option value="minimal" {% if resume.template == 'minimal' %}selected{% endif %}>Minimal</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-block">
+                    <div class="section-block-title">👤 Personal Information</div>
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name" value="{{ resume.full_name }}" class="form-control" placeholder="Arjun Sharma" oninput="updatePreview()">
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" value="{{ resume.email }}" class="form-control" placeholder="you@email.com" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" value="{{ resume.phone }}" class="form-control" placeholder="+91 98765 43210" oninput="updatePreview()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" name="location" value="{{ resume.location }}" class="form-control" placeholder="Bangalore, Karnataka" oninput="updatePreview()">
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">LinkedIn URL</label>
+                            <input type="url" name="linkedin" value="{{ resume.linkedin }}" class="form-control" placeholder="linkedin.com/in/yourname" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">GitHub URL</label>
+                            <input type="url" name="github" value="{{ resume.github }}" class="form-control" placeholder="github.com/yourname" oninput="updatePreview()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-block">
+                    <div class="section-block-title" style="justify-content:space-between;">
+                        📝 Professional Summary
+                        <button type="button" class="ai-btn" onclick="aiEnhance('summary', 'summary')">✨ AI Write</button>
+                    </div>
+                    <textarea name="summary" id="summary" class="form-control" rows="5" placeholder="A compelling 3-4 sentence summary of your professional background, key skills, and career goals..." oninput="updatePreview()">{{ resume.summary }}</textarea>
+                </div>
+            </div>
+
+            <!-- TAB: EXPERIENCE -->
+            <div class="tab-section" id="tab-experience">
+                <div class="section-block">
+                    <div class="section-block-title" style="justify-content:space-between;">
+                        💼 Work Experience
+                        <button type="button" class="btn-primary-sm btn-sm" onclick="addEntry('experience')">+ Add Job</button>
+                    </div>
+                    <div id="experience-entries"></div>
+                </div>
+            </div>
+
+            <!-- TAB: EDUCATION -->
+            <div class="tab-section" id="tab-education">
+                <div class="section-block">
+                    <div class="section-block-title" style="justify-content:space-between;">
+                        🎓 Education
+                        <button type="button" class="btn-primary-sm btn-sm" onclick="addEntry('education')">+ Add Degree</button>
+                    </div>
+                    <div id="education-entries"></div>
+                </div>
+            </div>
+
+            <!-- TAB: SKILLS -->
+            <div class="tab-section" id="tab-skills">
+                <div class="section-block">
+                    <div class="section-block-title" style="justify-content:space-between;">
+                        🛠 Skills
+                        <button type="button" class="ai-btn" onclick="aiEnhance('skills', 'skills')">✨ AI Suggest</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Skills <span style="color:var(--text3);font-weight:400;text-transform:none;">(comma-separated)</span></label>
+                        <textarea name="skills" id="skills" class="form-control" rows="3" placeholder="Python, Django, React, PostgreSQL, Docker, AWS, Git..." oninput="updatePreview()">{{ resume.skills }}</textarea>
+                    </div>
+                    <div class="form-group" style="margin-top:20px;">
+                        <label class="form-label">Certifications <span style="color:var(--text3);font-weight:400;text-transform:none;">(one per line)</span></label>
+                        <textarea name="certifications" id="certifications" class="form-control" rows="3" placeholder="AWS Certified Developer&#10;Google Cloud Associate&#10;Certified Kubernetes Admin" oninput="updatePreview()">{{ resume.certifications }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: PROJECTS -->
+            <div class="tab-section" id="tab-projects">
+                <div class="section-block">
+                    <div class="section-block-title" style="justify-content:space-between;">
+                        🚀 Projects
+                        <button type="button" class="btn-primary-sm btn-sm" onclick="addEntry('projects')">+ Add Project</button>
+                    </div>
+                    <div id="projects-entries"></div>
+                </div>
+            </div>
+
+        </form><!-- end form -->
+    </div>
+
+    <!-- RIGHT: LIVE PREVIEW PANEL -->
+    <div class="builder-panel">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <span style="font-family:var(--font-display);font-weight:700;font-size:0.9rem;">Live Preview</span>
+            <a href="{% url 'builder_preview' resume.pk %}" target="_blank" class="btn-outline-sm btn-sm">Open Full →</a>
+        </div>
+        <iframe id="preview-iframe" class="preview-frame" src="{% url 'builder_preview' resume.pk %}"></iframe>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+let expData  = {{ experience_json|safe }};
+let eduData  = {{ education_json|safe }};
+let projData = {{ projects_json|safe }};
+
+const ENHANCE_URL = "{% url 'builder_ai_enhance' resume.pk %}";
+const PREVIEW_URL = "{% url 'builder_preview' resume.pk %}";
+const CSRF = "{{ csrf_token }}";
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+}
+
+// ── RENDER ENTRIES ────────────────────────────────────────────────────────────
+function renderAll() {
+    renderSection('experience', expData,  experienceCard);
+    renderSection('education',  eduData,  educationCard);
+    renderSection('projects',   projData, projectCard);
+}
+
+function renderSection(name, data, cardFn) {
+    const container = document.getElementById(name + '-entries');
+    container.innerHTML = data.length === 0
+        ? `<div style="text-align:center;padding:32px;color:var(--text3);font-size:0.85rem;">No entries yet — click "+ Add" above.</div>`
+        : data.map((item, i) => cardFn(item, i, name)).join('');
+}
+
+function experienceCard(e, i) {
+    return `<div class="entry-card">
+        <button type="button" class="remove-btn" onclick="removeEntry('experience',${i})">✕ Remove</button>
+        <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">Job Title</label>
+                <input class="form-control" placeholder="Senior Developer" value="${e.title||''}" oninput="expData[${i}].title=this.value;syncJson();updatePreview()"></div>
+            <div class="form-group"><label class="form-label">Company</label>
+                <input class="form-control" placeholder="Infosys" value="${e.company||''}" oninput="expData[${i}].company=this.value;syncJson();updatePreview()"></div>
+        </div>
+        <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">Start Date</label>
+                <input class="form-control" placeholder="Jan 2022" value="${e.start||''}" oninput="expData[${i}].start=this.value;syncJson();updatePreview()"></div>
+            <div class="form-group"><label class="form-label">End Date</label>
+                <input class="form-control" placeholder="Present" value="${e.end||''}" oninput="expData[${i}].end=this.value;syncJson();updatePreview()"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Location</label>
+            <input class="form-control" placeholder="Bangalore, India" value="${e.location||''}" oninput="expData[${i}].location=this.value;syncJson();updatePreview()"></div>
+        <div class="form-group" style="margin-bottom:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <label class="form-label" style="margin-bottom:0;">Bullet Points</label>
+                <button type="button" class="ai-btn" onclick="aiEnhanceBullet(${i})">✨ AI Enhance</button>
+            </div>
+            <textarea class="form-control" rows="4" placeholder="• Built scalable APIs serving 1M+ users&#10;• Reduced load time by 40%..." oninput="expData[${i}].bullets=this.value;syncJson();updatePreview()">${e.bullets||''}</textarea>
+        </div>
+    </div>`;
+}
+
+function educationCard(e, i) {
+    return `<div class="entry-card">
+        <button type="button" class="remove-btn" onclick="removeEntry('education',${i})">✕ Remove</button>
+        <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">Degree</label>
+                <input class="form-control" placeholder="B.E. Computer Science" value="${e.degree||''}" oninput="eduData[${i}].degree=this.value;syncJson();updatePreview()"></div>
+            <div class="form-group"><label class="form-label">Institution</label>
+                <input class="form-control" placeholder="VTU, Bangalore" value="${e.institution||''}" oninput="eduData[${i}].institution=this.value;syncJson();updatePreview()"></div>
+        </div>
+        <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">Year</label>
+                <input class="form-control" placeholder="2021" value="${e.year||''}" oninput="eduData[${i}].year=this.value;syncJson();updatePreview()"></div>
+            <div class="form-group"><label class="form-label">Grade / CGPA</label>
+                <input class="form-control" placeholder="8.4 / 10" value="${e.grade||''}" oninput="eduData[${i}].grade=this.value;syncJson();updatePreview()"></div>
+        </div>
+    </div>`;
+}
+
+function projectCard(p, i) {
+    return `<div class="entry-card">
+        <button type="button" class="remove-btn" onclick="removeEntry('projects',${i})">✕ Remove</button>
+        <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">Project Name</label>
+                <input class="form-control" placeholder="JobAI Portal" value="${p.name||''}" oninput="projData[${i}].name=this.value;syncJson();updatePreview()"></div>
+            <div class="form-group"><label class="form-label">Tech Stack</label>
+                <input class="form-control" placeholder="Django, React, AWS" value="${p.tech||''}" oninput="projData[${i}].tech=this.value;syncJson();updatePreview()"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Project URL</label>
+            <input type="url" class="form-control" placeholder="https://github.com/..." value="${p.url||''}" oninput="projData[${i}].url=this.value;syncJson();updatePreview()"></div>
+        <div class="form-group" style="margin-bottom:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <label class="form-label" style="margin-bottom:0;">Description</label>
+                <button type="button" class="ai-btn" onclick="aiEnhanceProject(${i})">✨ AI Write</button>
+            </div>
+            <textarea class="form-control" rows="3" placeholder="Describe what you built, tech used, and impact..." oninput="projData[${i}].description=this.value;syncJson();updatePreview()">${p.description||''}</textarea>
+        </div>
+    </div>`;
+}
+
+// ── ENTRY MANAGEMENT ──────────────────────────────────────────────────────────
+function addEntry(type) {
+    if (type === 'experience') { expData.push({title:'',company:'',start:'',end:'Present',location:'',bullets:''}); renderSection('experience', expData, experienceCard); }
+    if (type === 'education')  { eduData.push({degree:'',institution:'',year:'',grade:''}); renderSection('education', eduData, educationCard); }
+    if (type === 'projects')   { projData.push({name:'',tech:'',url:'',description:''}); renderSection('projects', projData, projectCard); }
+    syncJson();
+}
+
+function removeEntry(type, i) {
+    if (!confirm('Remove this entry?')) return;
+    if (type === 'experience') { expData.splice(i,1); renderSection('experience', expData, experienceCard); }
+    if (type === 'education')  { eduData.splice(i,1); renderSection('education', eduData, educationCard); }
+    if (type === 'projects')   { projData.splice(i,1); renderSection('projects', projData, projectCard); }
+    syncJson(); updatePreview();
+}
+
+function syncJson() {
+    document.getElementById('experience_json').value = JSON.stringify(expData);
+    document.getElementById('education_json').value  = JSON.stringify(eduData);
+    document.getElementById('projects_json').value   = JSON.stringify(projData);
+}
+
+// ── AI ENHANCE ────────────────────────────────────────────────────────────────
+async function aiEnhance(section, fieldId) {
+    const btn = event.target;
+    const field = document.getElementById(fieldId);
+    const jobRole = document.getElementById('job_role').value || 'Software Developer';
+    btn.classList.add('loading');
+    btn.textContent = '⏳ Generating...';
+    try {
+        const fd = new FormData();
+        fd.append('csrfmiddlewaretoken', CSRF);
+        fd.append('section', section);
+        fd.append('content', field.value);
+        fd.append('job_role', jobRole);
+        const res = await fetch(ENHANCE_URL, {method:'POST', body:fd});
+        field.value = await res.text();
+        updatePreview();
+    } catch(e) { alert('AI enhancement failed. Please try again.'); }
+    finally { btn.classList.remove('loading'); btn.innerHTML = '✨ AI Write'; }
+}
+
+async function aiEnhanceBullet(idx) {
+    const btn = event.target;
+    const jobRole = document.getElementById('job_role').value || 'Software Developer';
+    btn.classList.add('loading'); btn.textContent = '⏳ Generating...';
+    try {
+        const fd = new FormData();
+        fd.append('csrfmiddlewaretoken', CSRF);
+        fd.append('section', 'experience_bullet');
+        fd.append('content', expData[idx].bullets || '');
+        fd.append('job_role', jobRole);
+        const res = await fetch(ENHANCE_URL, {method:'POST', body:fd});
+        expData[idx].bullets = await res.text();
+        syncJson(); renderSection('experience', expData, experienceCard); updatePreview();
+    } catch(e) { alert('Failed. Try again.'); }
+    finally { btn.classList.remove('loading'); btn.innerHTML = '✨ AI Enhance'; }
+}
+
+async function aiEnhanceProject(idx) {
+    const btn = event.target;
+    const jobRole = document.getElementById('job_role').value || 'Software Developer';
+    btn.classList.add('loading'); btn.textContent = '⏳ Generating...';
+    try {
+        const fd = new FormData();
+        fd.append('csrfmiddlewaretoken', CSRF);
+        fd.append('section', 'project');
+        fd.append('content', projData[idx].description || '');
+        fd.append('job_role', jobRole);
+        const res = await fetch(ENHANCE_URL, {method:'POST', body:fd});
+        projData[idx].description = await res.text();
+        syncJson(); renderSection('projects', projData, projectCard); updatePreview();
+    } catch(e) { alert('Failed. Try again.'); }
+    finally { btn.classList.remove('loading'); btn.innerHTML = '✨ AI Write'; }
+}
+
+// ── SAVE & PREVIEW ────────────────────────────────────────────────────────────
+function saveResume() {
+    syncJson();
+    const btn = document.getElementById('save-btn');
+    btn.textContent = '⏳ Saving...';
+    document.getElementById('resume-form').submit();
+}
+
+let previewTimer;
+function updatePreview() {
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(() => {
+        document.getElementById('preview-iframe').src = PREVIEW_URL + '?t=' + Date.now();
+    }, 800);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    renderAll();
+    syncJson();
+});
+</script>
+{% endblock %}

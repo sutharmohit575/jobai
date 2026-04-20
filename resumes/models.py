@@ -20,3 +20,39 @@ class Resume(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.title}"
+
+
+class ResumeBuilder(models.Model):
+    TEMPLATE_CHOICES = [
+        ('modern', 'Modern'),
+        ('classic', 'Classic'),
+        ('minimal', 'Minimal'),
+    ]
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='built_resumes')
+    title = models.CharField(max_length=100, default='My Resume')
+    template = models.CharField(max_length=20, choices=TEMPLATE_CHOICES, default='modern')
+
+    # Personal Info
+    full_name = models.CharField(max_length=100, blank=True)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    location = models.CharField(max_length=100, blank=True)
+    linkedin = models.URLField(blank=True)
+    github = models.URLField(blank=True)
+    website = models.URLField(blank=True)
+
+    # Content sections (stored as JSON text)
+    summary = models.TextField(blank=True)
+    experience = models.TextField(blank=True, default='[]')  # JSON
+    education = models.TextField(blank=True, default='[]')   # JSON
+    skills = models.TextField(blank=True)
+    projects = models.TextField(blank=True, default='[]')    # JSON
+    certifications = models.TextField(blank=True)
+
+    # AI enhancement flags
+    ai_enhanced = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} — {self.title}"
