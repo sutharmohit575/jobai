@@ -29,7 +29,7 @@
                     <a href="{% url 'post_job' %}" class="nav-link">Post Job</a>
                 {% endif %}
                 <a href="{% url 'profile' %}" class="nav-link">Profile</a>
-                <a href="{% url 'logout' %}" class="btn btn-outline-sm">Logout</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-sm" style="color:red;">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}" class="nav-link">Login</a>
                 <a href="{% url 'signup' %}" class="btn btn-primary-sm">Get Started</a>
