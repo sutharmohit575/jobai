@@ -76,8 +76,8 @@ WSGI_APPLICATION = 'jobai.wsgi.application'
 # Uses DATABASE_URL env var on Railway (PostgreSQL), falls back to SQLite locally
 import dj_database_url
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+    'default': dj_database_url.parse(
+        os.environ.get("postgresql://neondb_owner:npg_vQxkYoG3M4lR@ep-polished-credit-aqht2gtr-pooler.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
     )
 }
 
