@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 🌐 **Live Demo:**  
-👉 [![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Project-brightgreen?style=for-the-badge)](https://jobai-production-97a3.up.railway.app)
+👉 [![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Project-brightgreen?style=for-the-badge)](https://jobai-sutharmohit575.vercel.app)
 
 ## 📌 Overview
 
