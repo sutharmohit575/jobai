@@ -1,12 +1,14 @@
 # 🚀 JobAI — AI-Powered Job Portal
 
-![Python](https://img.shields.io/badge/Python-3.12-blue)
-![Django](https://img.shields.io/badge/Django-5.x-green)
-![Deployment](https://img.shields.io/badge/Deployed-Railway-purple)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+[![Python](https://img.shields.io/badge/Python-3.12-blue)](https://python.org)
+[![Django](https://img.shields.io/badge/Django-5.x-green)](https://djangoproject.com)
+[![Deployment](https://img.shields.io/badge/Deployed-Vercel-black)](https://vercel.com)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
-🌐 **Live Demo:**  
+🌐 **Live Demo:**
 👉 [![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Project-brightgreen?style=for-the-badge)](https://jobai-sutharmohit575.vercel.app)
+
+---
 
 ## 📌 Overview
 
@@ -19,38 +21,38 @@ It allows users to explore jobs, apply easily, and manage resumes while providin
 
 ### 👤 User Features
 
-* 🔐 User authentication (Login / Register)
-* 📄 Resume upload & management
-* 💼 Browse and apply for jobs
-* 📊 Personalized dashboard
+- 🔐 User authentication (Login / Register)
+- 📄 Resume upload & management
+- 💼 Browse and apply for jobs
+- 📊 Personalized dashboard
 
 ### 🧑‍💼 Admin Features
 
-* 🛠️ Django Admin Panel (custom UI)
-* 👥 Manage users
-* 📋 Manage job listings
-* 📑 Track applications
+- 🛠️ Django Admin Panel (custom UI)
+- 👥 Manage users
+- 📋 Manage job listings
+- 📑 Track applications
 
 ### ⚙️ Technical Features
 
-* ⚡ Django-based backend
-* 🎨 Custom admin UI (styled)
-* 🌐 Deployed on Railway
-* 🗄️ PostgreSQL database (production)
-* 🔒 CSRF & security configured
+- ⚡ Django-based backend
+- 🎨 Custom admin UI (styled)
+- 🌐 Deployed on Vercel
+- 🗄️ PostgreSQL database (production)
+- 🔒 CSRF & security configured
 
 ---
 
 ## 🏗️ Tech Stack
 
-| Technology | Usage                 |
-| ---------- | --------------------- |
-| Python     | Backend               |
-| Django     | Web Framework         |
+| Technology | Usage |
+| --- | --- |
+| Python | Backend |
+| Django | Web Framework |
 | PostgreSQL | Database (Production) |
-| SQLite     | Local Development     |
-| HTML/CSS   | Frontend              |
-| Railway    | Deployment            |
+| SQLite | Local Development |
+| HTML/CSS | Frontend |
+| Vercel | Deployment |
 
 ---
 
@@ -75,39 +77,39 @@ JobAI/
 
 ### 1️⃣ Clone Repository
 
-```
+```bash
 git clone https://github.com/sutharmohit575/jobai.git
 cd jobai
 ```
 
 ### 2️⃣ Create Virtual Environment
 
-```
+```bash
 python -m venv venv
 venv\Scripts\activate   # Windows
 ```
 
 ### 3️⃣ Install Dependencies
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
 ### 4️⃣ Run Migrations
 
-```
+```bash
 python manage.py migrate
 ```
 
 ### 5️⃣ Create Superuser
 
-```
+```bash
 python manage.py createsuperuser
 ```
 
 ### 6️⃣ Run Server
 
-```
+```bash
 python manage.py runserver
 ```
 
@@ -115,12 +117,12 @@ python manage.py runserver
 
 ---
 
-## 🌍 Deployment (Railway)
+## 🌍 Deployment (Vercel)
 
 ### Steps:
 
 1. Push code to GitHub
-2. Connect repo to Railway
+2. Go to [vercel.com](https://vercel.com) → New Project → Import your repo
 3. Add environment variables:
 
 ```
@@ -129,40 +131,36 @@ DEBUG=False
 DATABASE_URL=your_postgres_url
 ```
 
-4. Set Start Command:
+4. Click **Deploy** 🚀
 
-```
-gunicorn jobai.wsgi
-```
-
-5. Deploy 🚀
+> Vercel auto-detects the project. Make sure you have a `vercel.json` or `wsgi` entry point configured for Django.
 
 ---
 
 ## 🔐 Environment Variables
 
-| Variable     | Description                  |
-| ------------ | ---------------------------- |
-| SECRET_KEY   | Django secret key            |
-| DEBUG        | Set False in production      |
+| Variable | Description |
+| --- | --- |
+| SECRET_KEY | Django secret key |
+| DEBUG | Set False in production |
 | DATABASE_URL | PostgreSQL connection string |
 
 ---
 
 ## 🛡️ Security Notes
 
-* CSRF protection enabled
-* Secure cookies configured
-* Environment variables used for secrets
+- CSRF protection enabled
+- Secure cookies configured
+- Environment variables used for secrets
 
 ---
 
 ## 🧠 Future Improvements
 
-* 🤖 AI Resume Analyzer
-* 📊 Job recommendation system
-* 💬 Chatbot integration
-* 📈 Analytics dashboard
+- 🤖 AI Resume Analyzer
+- 📊 Job recommendation system
+- 💬 Chatbot integration
+- 📈 Analytics dashboard
 
 ---
 
@@ -186,11 +184,11 @@ This project is licensed under the MIT License.
 ## 👨‍💻 Author
 
 **Mohit Suthar**
+- GitHub: [sutharmohit575](https://github.com/sutharmohit575)
+- LinkedIn: [sutharmohit575](https://linkedin.com/in/sutharmohit575)
 
 ---
 
 ## ⭐ Support
 
 If you like this project, please ⭐ the repo and share it!
-
----
