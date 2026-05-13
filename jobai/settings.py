@@ -75,13 +75,22 @@ WSGI_APPLICATION = 'jobai.wsgi.application'
 # ── DATABASE ──────────────────────────────────────────────────────────────────
 # Uses DATABASE_URL env var on Railway (PostgreSQL), falls back to SQLite locally
 import dj_database_url
-import dj_database_url
 import os
 
+# DATABASES = {
+#     'default': dj_database_url.parse(
+#         os.environ.get("DATABASE_URL")
+#     )
+# }
+
+DATABASE_URL = os.getenv('DATABASE_URL')
+
 DATABASES = {
-    'default': dj_database_url.parse(
-        os.environ.get("DATABASE_URL")
-    )
+    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
+    if DATABASE_URL else {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = []
