@@ -15,7 +15,8 @@
       "salary_max": 1000000,
       "is_active": true,
       "deadline": "2025-08-01",
-      "recruiter": null
+      "recruiter": 3,
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
@@ -34,7 +35,8 @@
       "salary_max": 700000,
       "is_active": true,
       "deadline": "2025-07-15",
-      "recruiter": null
+      "recruiter": 3,
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
@@ -53,7 +55,8 @@
       "salary_max": 1800000,
       "is_active": true,
       "deadline": "2025-09-01",
-      "recruiter": null
+      "recruiter": 3,
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
@@ -72,7 +75,8 @@
       "salary_max": 800000,
       "is_active": true,
       "deadline": "2025-07-30",
-      "recruiter": null
+      "recruiter": 3,
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
@@ -91,7 +95,8 @@
       "salary_max": 2000000,
       "is_active": true,
       "deadline": "2025-08-15",
-      "recruiter": null
+      "recruiter": 3,
+      "created_at": "2025-01-01T00:00:00Z"
     }
   }
 ]

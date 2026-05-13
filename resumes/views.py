@@ -17,7 +17,7 @@ def upload_resume(request):
             resume = form.save(commit=False)
             resume.user = request.user
             resume.save()
-            raw_text = extract_text_from_file(resume.file.path)
+            raw_text = extract_text_from_file(resume.file.url)
             resume.raw_text = raw_text
             resume.skills = extract_skills(raw_text)
             resume.experience_years = estimate_experience(raw_text)
@@ -42,8 +42,6 @@ def resume_detail(request, pk):
 def delete_resume(request, pk):
     resume = get_object_or_404(Resume, pk=pk, user=request.user)
     if request.method == 'POST':
-        if os.path.exists(resume.file.path):
-            os.remove(resume.file.path)
         resume.delete()
         messages.success(request, 'Resume deleted.')
     return redirect('dashboard')
@@ -51,7 +49,7 @@ def delete_resume(request, pk):
 @login_required
 def reanalyze_resume(request, pk):
     resume = get_object_or_404(Resume, pk=pk, user=request.user)
-    raw_text = extract_text_from_file(resume.file.path)
+    raw_text = extract_text_from_file(resume.file.url)
     resume.raw_text = raw_text
     resume.skills = extract_skills(raw_text)
     resume.experience_years = estimate_experience(raw_text)

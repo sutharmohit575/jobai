@@ -1,12 +1,14 @@
-# requirements
 annotated-types==0.7.0
 anyio==4.13.0
 asgiref==3.11.1
 certifi==2026.2.25
+charset-normalizer==3.4.7
 click==8.3.2
+cloudinary==1.44.2
 colorama==0.4.6
 dj-database-url==3.1.2
 Django==4.2.30
+django-cloudinary-storage==0.3.0
 dnspython==2.8.0
 email_validator==2.2.0
 fastapi==0.115.6
@@ -31,11 +33,14 @@ pytest-asyncio==0.24.0
 python-dotenv==1.2.2
 python-multipart==0.0.18
 PyYAML==6.0.3
+requests==2.34.0
 ruff==0.8.4
+six==1.17.0
 sqlparse==0.5.5
 starlette==0.41.3
 typing_extensions==4.15.0
 tzdata==2026.1
+urllib3==2.7.0
 uvicorn==0.32.1
 watchfiles==1.1.1
 websockets==16.0

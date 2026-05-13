@@ -12,20 +12,22 @@ COMMON_SKILLS = [
     'communication', 'leadership', 'problem solving', 'teamwork',
 ]
 
-def extract_text_from_file(file_path):
-    """Extract text from uploaded resume file."""
-    ext = os.path.splitext(file_path)[1].lower()
+import requests
+import io
+
+def extract_text_from_file(file_path_or_url):
     try:
-        if ext == '.txt':
-            with open(file_path, 'r', errors='ignore') as f:
-                return f.read()
+        # Handle Cloudinary URLs or any remote file URL
+        if file_path_or_url.startswith('http'):
+            response = requests.get(file_path_or_url)
+            file_bytes = io.BytesIO(response.content)
+            import pdfplumber
+            with pdfplumber.open(file_bytes) as pdf:
+                return '\n'.join(page.extract_text() or '' for page in pdf.pages)
         else:
-            # For PDF/DOCX try basic text extraction
-            with open(file_path, 'rb') as f:
+            with open(file_path_or_url, 'rb') as f:
                 content = f.read()
-            # Try to extract readable text from binary
             text = content.decode('utf-8', errors='ignore')
-            # Clean up binary artifacts
             text = re.sub(r'[^\x20-\x7E\n\r\t]', ' ', text)
             text = re.sub(r'\s+', ' ', text)
             return text[:5000]
