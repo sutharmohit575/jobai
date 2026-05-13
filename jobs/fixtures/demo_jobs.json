@@ -1,0 +1,97 @@
+[
+  {
+    "model": "jobs.job",
+    "pk": 1,
+    "fields": {
+      "title": "Frontend Developer",
+      "company": "TechCorp India",
+      "location": "Bangalore, India",
+      "job_type": "Full Time",
+      "level": "Mid Level",
+      "description": "We are looking for a skilled Frontend Developer to join our team. You will be responsible for building responsive web applications using React and modern CSS frameworks.",
+      "requirements": "2+ years of experience with React.js\nStrong HTML/CSS skills\nExperience with REST APIs\nGit version control",
+      "skills_required": "React, JavaScript, HTML, CSS, Git",
+      "salary_min": 600000,
+      "salary_max": 1000000,
+      "is_active": true,
+      "deadline": "2025-08-01",
+      "recruiter": null
+    }
+  },
+  {
+    "model": "jobs.job",
+    "pk": 2,
+    "fields": {
+      "title": "Backend Developer",
+      "company": "StartupXYZ",
+      "location": "Remote",
+      "job_type": "Full Time",
+      "level": "Junior",
+      "description": "Join our backend team to build scalable APIs and microservices. You will work with Django and PostgreSQL to power our growing platform.",
+      "requirements": "1+ years Django experience\nKnowledge of REST APIs\nBasic SQL knowledge",
+      "skills_required": "Python, Django, PostgreSQL, REST API",
+      "salary_min": 400000,
+      "salary_max": 700000,
+      "is_active": true,
+      "deadline": "2025-07-15",
+      "recruiter": null
+    }
+  },
+  {
+    "model": "jobs.job",
+    "pk": 3,
+    "fields": {
+      "title": "Data Scientist",
+      "company": "Analytics Hub",
+      "location": "Hyderabad, India",
+      "job_type": "Full Time",
+      "level": "Senior",
+      "description": "We need an experienced Data Scientist to analyze large datasets and build ML models to improve our product recommendations.",
+      "requirements": "3+ years in data science\nStrong Python and ML skills\nExperience with TensorFlow or PyTorch",
+      "skills_required": "Python, Machine Learning, TensorFlow, SQL, Pandas",
+      "salary_min": 1200000,
+      "salary_max": 1800000,
+      "is_active": true,
+      "deadline": "2025-09-01",
+      "recruiter": null
+    }
+  },
+  {
+    "model": "jobs.job",
+    "pk": 4,
+    "fields": {
+      "title": "UI/UX Designer",
+      "company": "DesignStudio",
+      "location": "Mumbai, India",
+      "job_type": "Part Time",
+      "level": "Mid Level",
+      "description": "Looking for a creative UI/UX Designer to design beautiful and intuitive interfaces for our mobile and web applications.",
+      "requirements": "Portfolio of design work\nProficiency in Figma\nUnderstanding of user research",
+      "skills_required": "Figma, Adobe XD, User Research, Prototyping",
+      "salary_min": 500000,
+      "salary_max": 800000,
+      "is_active": true,
+      "deadline": "2025-07-30",
+      "recruiter": null
+    }
+  },
+  {
+    "model": "jobs.job",
+    "pk": 5,
+    "fields": {
+      "title": "DevOps Engineer",
+      "company": "CloudBase",
+      "location": "Pune, India",
+      "job_type": "Full Time",
+      "level": "Senior",
+      "description": "We are hiring a DevOps Engineer to manage our cloud infrastructure, CI/CD pipelines, and ensure high availability of our services.",
+      "requirements": "3+ years DevOps experience\nAWS or GCP certification preferred\nDocker and Kubernetes experience",
+      "skills_required": "AWS, Docker, Kubernetes, CI/CD, Linux",
+      "salary_min": 1400000,
+      "salary_max": 2000000,
+      "is_active": true,
+      "deadline": "2025-08-15",
+      "recruiter": null
+    }
+  }
+]
